@@ -1,0 +1,57 @@
+{% extends "admin/change_list.html" %}
+{% load static %}
+
+<!-- Override extrahead to add Chart.js -->
+{% block extrahead %}
+{{ block.super }}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const ctx = document.getElementById('myChart').getContext('2d');
+
+  const invest_data  = {{ invest_data | safe }};
+  const miete_data  = {{ miete_data | safe }};
+  // Parse the dates to JS
+ // chartData.forEach((d) => {
+//    d.x = new Date(d.date);
+//  });
+const chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        datasets: [{
+            label: 'Invest',
+            data: invest_data
+        },
+            {
+            label: 'Mieteinnahmen',
+           data: miete_data,
+                backgroundColor: 'rgb(99,206,255)'
+        }
+        ],
+      //  labels: this.miete_data.mietobjekt__name
+        labels: ['H5 EG','Gewerbe']
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+
+            }
+        }
+    }
+    });
+  // Render the chart
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<!-- Render our chart -->
+<div style="width: 80%;">
+  <canvas style="margin-bottom: 30px; width: 60%; height: 50%;" id="myChart"></canvas>
+</div>
+
+<!-- Render the rest of the ChangeList view -->
+{{ block.super }}
+{% endblock %}
