@@ -10,29 +10,29 @@
 document.addEventListener('DOMContentLoaded', () => {
   const ctx = document.getElementById('myChart').getContext('2d');
 
-  const invest_data  = {{ invest_data | safe }};
+  const invest_data = {{ invest_data | safe }};
   const miete_data  = {{ miete_data | safe }};
-  // Parse the dates to JS
- // chartData.forEach((d) => {
-//    d.x = new Date(d.date);
-//  });
+
+    x_Ax = []
+    for (var i = 0; i < invest_data.length; ++i) {
+        x_Ax.push(invest_data[i].mietobject__name);
+    }
 const chart = new Chart(ctx, {
     type: 'bar',
     data: {
         datasets: [{
             label: 'Invest',
             data: invest_data
-        },
-            {
+        }, {
             label: 'Mieteinnahmen',
-           data: miete_data,
-                backgroundColor: 'rgb(99,206,255)'
+            data: miete_data,
+            backgroundColor: 'rgb(99,206,255)'
         }
         ],
-      //  labels: this.miete_data.mietobjekt__name
-        labels: ['H5 EG','Gewerbe']
+        labels: x_Ax
     },
     options: {
+
         scales: {
             y: {
                 beginAtZero: true

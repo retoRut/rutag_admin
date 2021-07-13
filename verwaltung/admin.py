@@ -63,7 +63,9 @@ class UnterhaltAdmin(admin.ModelAdmin):
         # Serialize and attach the chart data to the template context
         as_json_invest = json.dumps(list(invest_data), cls=DjangoJSONEncoder)
         as_json_miete = json.dumps(list(miete_data), cls=DjangoJSONEncoder)
-        extra_context = extra_context or {"invest_data": as_json_invest, "miete_data": as_json_miete}
+        
+        extra_context = extra_context or {"invest_data": as_json_invest,
+                                          "miete_data": as_json_miete}
 
         # Serialize and attach the chart data to the template context
   #      as_json = json.dumps(list(invest_data), cls=DjangoJSONEncoder)
