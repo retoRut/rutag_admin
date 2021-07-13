@@ -14,10 +14,9 @@ from django.forms import DateTimeField, DateField
 from django.http import JsonResponse
 from django.urls import path
 
-from .models import Question, Mieter, Mietobjekt, Nebenkosten, Mietzinsprofil, \
+from .models import Mieter, Mietobjekt, Nebenkosten, Mietzinsprofil, \
     Mietzins, Year, Unterhalt, Mietzinseingaenge
 
-admin.site.register(Question)
 
 # Register your models here.
 @admin.register(Mieter)
