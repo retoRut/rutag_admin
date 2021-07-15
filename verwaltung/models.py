@@ -9,15 +9,26 @@ from django.db.models import Sum
 from django.utils import timezone
 # Create your models here.
 
+class Building(models.Model):
+    name  = models.CharField(verbose_name="Objektname",max_length=200, default=1)
+
+    #description = models.CharField(verbose_name="Beschreibung",max_length=1000)
+    description = models.TextField(verbose_name="Beschreibung", max_length=1024 * 2)
+    # rent = models.DecimalField(max_digits=6, decimal_places=2)
+    photo = models.ImageField(verbose_name="Bild", default=0, blank = True)
+
+    def __str__(self):
+        return self.name
 
 
 class Mietobjekt(models.Model):
-    name = description = models.CharField(verbose_name="Objektname",max_length=200, default=0)
-    building = models.CharField(default = 0, max_length=10, choices=(('H1', 'H1',),
-                                                                        ('H3', 'H3'),
-                                                                      ('H3A', 'H3A'),
-                                                                      ('H5', 'H5'),
-                                                                      ('H5A', 'H5A')))
+    name  = models.CharField(verbose_name="Objektname",max_length=200, default=0)
+    #building = models.CharField(default = 0, max_length=10, choices=(('H1', 'H1',),
+    #                                                                    ('H3', 'H3'),
+    #                                                                  ('H3A', 'H3A'),
+    #                                                                  ('H5', 'H5'),
+    #                                                                  ('H5A', 'H5A')))
+    building  = models.ForeignKey(Building, on_delete=models.CASCADE, default=0)
     # mietzins = models.ManyToManyField(Mietzinse)
     #description = models.CharField(verbose_name="Beschreibung",max_length=1000)
     description = models.TextField(verbose_name="Beschreibung", max_length=1024 * 2)
@@ -25,7 +36,7 @@ class Mietobjekt(models.Model):
     photo = models.ImageField(verbose_name="Bild", default=0, blank = True)
 
     def __str__(self):
-        return self.name+' '+self.building
+        return self.name+' '+self.building.name
 
 
 class Mietzins(models.Model):

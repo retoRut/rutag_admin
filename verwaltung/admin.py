@@ -15,7 +15,7 @@ from django.http import JsonResponse
 from django.urls import path
 
 from .models import Mieter, Mietobjekt, Nebenkosten, Mietzinsprofil, \
-    Mietzins, Year, Unterhalt, Mietzinseingaenge
+    Mietzins, Year, Unterhalt, Mietzinseingaenge, Building
 
 
 # Register your models here.
@@ -41,37 +41,55 @@ class NebenkostenAdmin(admin.ModelAdmin):
 class MietzinsAdmin(admin.ModelAdmin):
     list_display = [field.name for field in Mietzins._meta.fields]
 
+@admin.register(Building)
+class BuildingAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in Building._meta.fields]
 
 @admin.register(Unterhalt)
 class UnterhaltAdmin(admin.ModelAdmin):
     list_display = [field.name for field in Unterhalt._meta.fields]
+    # set the Filter option
+    list_filter = ('mietobject',)
+  #  save_as = True
+  #  save_on_top = True
+  #  change_list_template = 'change_list_graph.html'
 
     def changelist_view(self, request, extra_context=None):
-        # Aggregate new subscribers per day
-        invest_data = (
-            #Mietobjekt.objects.filter()
-            Unterhalt.objects.values("mietobject__name").annotate(y=Sum("betrag")).order_by("-mietobject")
-        )
-        miete_data = (
-            #Mietobjekt.objects.filter()
-            Mietzins.objects.values("mietobject__name").annotate(y=Sum("rent")).order_by("-mietobject")
-        )
-
-        print('Unterhalt chart:'+ str(invest_data))
-        print('mietzins chart:'+ str(miete_data))
-
-        # Serialize and attach the chart data to the template context
-        as_json_invest = json.dumps(list(invest_data), cls=DjangoJSONEncoder)
-        as_json_miete = json.dumps(list(miete_data), cls=DjangoJSONEncoder)
+        """
         
-        extra_context = extra_context or {"invest_data": as_json_invest,
-                                          "miete_data": as_json_miete}
+        :param request:
+        :param extra_context:
+        :return:
+        """
+        # Aggregate new subscribers per day
+        invest_data_object = (
+           Unterhalt.objects.values("mietobject__name").annotate(y=Sum("betrag")).order_by("-mietobject")
+        )
+        miete_data_object = (
+             Mietzins.objects.values("mietobject__name").annotate(y=Sum("rent")).order_by("-mietobject")
+        )
+        invest_data_building = (
+              Unterhalt.objects.values("mietobject__building__name").annotate(y=Sum("betrag"))
+        )
+        miete_data_building = (
+             Mietzins.objects.values("mietobject__building__name").annotate(y=Sum("rent"))
+        )
+        print('invest_data_object:'+ str(invest_data_object))
+        print('miete_data_object:'+ str(miete_data_object))
+        print('invest_data_building:'+ str(invest_data_building))
+        print('miete_data_building:' + str(miete_data_building))
 
         # Serialize and attach the chart data to the template context
-  #      as_json = json.dumps(list(invest_data), cls=DjangoJSONEncoder)
-  #      extra_context = extra_context or {"miete_data": as_json}
+        as_json_invest_data_object = json.dumps(list(invest_data_object), cls=DjangoJSONEncoder)
+        as_json_miete_data_object = json.dumps(list(miete_data_object), cls=DjangoJSONEncoder)
+        as_json_invest_data_building = json.dumps(list(invest_data_building), cls=DjangoJSONEncoder)
+        as_json_miete_data_building = json.dumps(list(miete_data_building), cls=DjangoJSONEncoder)
 
-        # Call the superclass changelist_view to render the page
+        extra_context = extra_context or {"invest_data_object": as_json_invest_data_object,
+                                          "miete_data_object": as_json_miete_data_object,
+                                          "invest_data_building":as_json_invest_data_building,
+                                          "miete_data_building":as_json_miete_data_building }
+
         return super().changelist_view(request, extra_context=extra_context)
 
 # admin.site.register(Nebenkosten_Typ)
