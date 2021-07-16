@@ -41,6 +41,7 @@ class NebenkostenAdmin(admin.ModelAdmin):
 class MietzinsAdmin(admin.ModelAdmin):
     list_display = [field.name for field in Mietzins._meta.fields]
 
+
 @admin.register(Building)
 class BuildingAdmin(admin.ModelAdmin):
     list_display = [field.name for field in Building._meta.fields]
@@ -56,7 +57,7 @@ class UnterhaltAdmin(admin.ModelAdmin):
 
     def changelist_view(self, request, extra_context=None):
         """
-        
+
         :param request:
         :param extra_context:
         :return:
@@ -96,6 +97,19 @@ class UnterhaltAdmin(admin.ModelAdmin):
 @admin.register(Mietzinsprofil)
 class MietzinsprofilAdmin(admin.ModelAdmin):
     list_display = [field.name for field in Mietzinsprofil._meta.fields]
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        """
+          show only entries with activ = True
+        :param db_field:
+        :param request:
+        :param kwargs:
+        :return:
+        """
+        if db_field.name == "miete":
+            kwargs["queryset"] = Mietzins.objects.filter(aktiv= True)
+            print(str(kwargs["queryset"]))
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
 
 
 # ---- Table Mietzinseingaenge

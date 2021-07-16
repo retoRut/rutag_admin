@@ -48,8 +48,10 @@ class Mietzins(models.Model):
     end_date = models.DateField(default=timezone.now() )
     mietobject = models.ForeignKey(Mietobjekt, on_delete=models.CASCADE, default=0)
     aktiv = models.BooleanField(default=False)
+
     def __str__(self):
-        return str(self.rent)
+
+        return str(self.mietobject)+' '+str(self.rent)
 
 
 class Year(models.Model):
