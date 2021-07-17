@@ -12,10 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const chartData = {{ chart_data | safe }};
 
-  // Parse the dates to JS
- // chartData.forEach((d) => {
-//    d.x = new Date(d.date);
-//  });
+    x_Ax = []
+    for (var i = 0; i < chartData.length; ++i) {
+        x_Ax.push(chartData[i].year__typ);
+    }
 const chart = new Chart(ctx, {
     type: 'line',
     data: {
@@ -23,7 +23,7 @@ const chart = new Chart(ctx, {
             label: 'Mietzinseinnahmen',
             data: chartData
         }],
-        labels: ['Januar', 'Februar', 'März', 'April','Mai','Juni','Juli','August','September','Oktober','November','Dezember']
+        labels: x_Ax
     },
     options: {
         scales: {

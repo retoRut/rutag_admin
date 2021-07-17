@@ -7,15 +7,19 @@ from django.contrib import admin
 from django.db import models
 from django.db.models import Sum
 from django.utils import timezone
-# Create your models here.
+
 
 class Building(models.Model):
     name  = models.CharField(verbose_name="Objektname",max_length=200, default=1)
-
-    #description = models.CharField(verbose_name="Beschreibung",max_length=1000)
     description = models.TextField(verbose_name="Beschreibung", max_length=1024 * 2)
-    # rent = models.DecimalField(max_digits=6, decimal_places=2)
     photo = models.ImageField(verbose_name="Bild", default=0, blank = True)
+
+    def image_tag(self):
+        from django.utils.html import escape
+        return u'<img src="%s" />'# % escape( < URL to the image >)
+
+    image_tag.short_description = 'Image'
+    image_tag.allow_tags = True
 
     def __str__(self):
         return self.name
@@ -23,11 +27,6 @@ class Building(models.Model):
 
 class Mietobjekt(models.Model):
     name  = models.CharField(verbose_name="Objektname",max_length=200, default=0)
-    #building = models.CharField(default = 0, max_length=10, choices=(('H1', 'H1',),
-    #                                                                    ('H3', 'H3'),
-    #                                                                  ('H3A', 'H3A'),
-    #                                                                  ('H5', 'H5'),
-    #                                                                  ('H5A', 'H5A')))
     building  = models.ForeignKey(Building, on_delete=models.CASCADE, default=0)
     # mietzins = models.ManyToManyField(Mietzinse)
     #description = models.CharField(verbose_name="Beschreibung",max_length=1000)
@@ -92,7 +91,6 @@ class Mieter(models.Model):
             used for ForeignKey dropDown
         :return:
         """
-        # m_zins = ", ".join(str(m) for m in self.mietzins.all())
         return ('{} {} {} ').format(
                                                     self.company,
                                                     self.first_name,
@@ -105,6 +103,7 @@ class Mietzinsprofil(models.Model):
     nebenkosten = models.ManyToManyField(Nebenkosten)
     start_date = models.DateField(default=timezone.now())
     end_date = models.DateField(default=timezone.now())
+    activ = models.BooleanField(verbose_name="aktiv", default=False)
 
     def __str__(self):
         # total Miete und Nebenkosten
@@ -141,7 +140,6 @@ class Mietzinseingaenge(models.Model):
     mieter = models.ForeignKey(Mieter, on_delete=models.CASCADE)
     mietzinsprofil = models.ForeignKey(Mietzinsprofil, on_delete=models.CASCADE, default =0)
     betrag = models.IntegerField(default=0)
-    # year = models.DateField(default=datetime.now().year, blank = True)
     year  = models.ForeignKey(Year, on_delete=models.CASCADE, default=0)
 
     def __str__(self):

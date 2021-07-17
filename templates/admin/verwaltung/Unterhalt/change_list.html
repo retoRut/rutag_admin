@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     x_Ax = []
     for (var i = 0; i < invest_data_object.length; ++i) {
-        x_Ax.push(invest_data_object[i].mietobject__name);
+        x_Ax.push(invest_data_object[i].mietobject__name+' '+invest_data_object[i].mietobject__building__name);
     }
 const chart = new Chart(ctx, {
     type: 'bar',
