@@ -1,18 +1,11 @@
 from django.contrib import admin
-
 # Register your models here.
 import json
 
-
 from django.contrib import admin
 
-# import django_admin_listfilter_dropdown.filters
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Count, Sum, Min, Max
-from django.db.models.functions import Trunc, TruncDay
-from django.forms import DateTimeField, DateField
-from django.http import JsonResponse
-from django.urls import path
 
 from .models import Mieter, Mietobjekt, Nebenkosten, Mietzinsprofil, \
     Mietzins, Year, Unterhalt, Mietzinseingaenge, Building
@@ -22,6 +15,7 @@ from .models import Mieter, Mietobjekt, Nebenkosten, Mietzinsprofil, \
 @admin.register(Mieter)
 class MieterAdmin(admin.ModelAdmin):
     list_display = [field.name for field in Mieter._meta.fields]
+    list_filter = ('activ',)
 
 admin.site.register(Year)
 
@@ -29,7 +23,7 @@ admin.site.register(Year)
 @admin.register(Mietobjekt)
 class MietobjektAdmin(admin.ModelAdmin):
     list_display = [field.name for field in Mietobjekt._meta.fields]
-
+    list_filter = ('building',)
 
 # ---- Table Nebenkosten
 @admin.register(Nebenkosten)
@@ -133,7 +127,7 @@ class MietzinseingaengeAdmin(admin.ModelAdmin):
     def changelist_view(self, request, extra_context=None):
         # Aggregate new subscribers per day
         chart_data = (
-            Mietzinseingaenge.objects.values("year__typ").annotate(y=Sum("betrag")).order_by("year")
+            Mietzinseingaenge.objects.values("year__typ").annotate(y=Sum("betrag")).order_by("-year")
         )
         print('Mieteinnahmen chart:'+ str(chart_data))
 

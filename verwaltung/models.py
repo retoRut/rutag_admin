@@ -1,10 +1,4 @@
 from django.db import models
-
-# Create your models here.
-from datetime import datetime, date
-
-from django.contrib import admin
-from django.db import models
 from django.db.models import Sum
 from django.utils import timezone
 
@@ -16,7 +10,7 @@ class Building(models.Model):
 
     def image_tag(self):
         from django.utils.html import escape
-        return u'<img src="%s" />'# % escape( < URL to the image >)
+        return u'<img src="%s" />'
 
     image_tag.short_description = 'Image'
     image_tag.allow_tags = True
@@ -28,10 +22,7 @@ class Building(models.Model):
 class Mietobjekt(models.Model):
     name  = models.CharField(verbose_name="Objektname",max_length=200, default=0)
     building  = models.ForeignKey(Building, on_delete=models.CASCADE, default=0)
-    # mietzins = models.ManyToManyField(Mietzinse)
-    #description = models.CharField(verbose_name="Beschreibung",max_length=1000)
     description = models.TextField(verbose_name="Beschreibung", max_length=1024 * 2)
-    # rent = models.DecimalField(max_digits=6, decimal_places=2)
     photo = models.ImageField(verbose_name="Bild", default=0, blank = True)
 
     def __str__(self):
@@ -43,8 +34,8 @@ class Mietzins(models.Model):
     description = models.CharField(verbose_name="Beschreibung",max_length=200)
     rent = models.DecimalField(verbose_name="Mietpreis (SFR)",max_digits=6, decimal_places=2)
     # mieter = models.ForeignKey(Mieter, on_delete=models.CASCADE, default=0)
-    start_date = models.DateField(default=timezone.now() )
-    end_date = models.DateField(default=timezone.now() )
+    start_date = models.DateField(default=timezone.now())
+    end_date = models.DateField(default=timezone.now())
     mietobject = models.ForeignKey(Mietobjekt, on_delete=models.CASCADE, default=0)
     aktiv = models.BooleanField(default=False)
 
@@ -117,6 +108,7 @@ class Unterhalt(models.Model):
     mietobject = models.ForeignKey(Mietobjekt, on_delete=models.CASCADE, default =0)
     description = models.TextField(verbose_name="Beschreibung", max_length=1024 * 2)
     betrag = models.DecimalField(verbose_name="Investition (SFR)",max_digits=10, decimal_places=2)
+    datum = models.DateField(default=timezone.now())
 
     def __str__(self):
         return str(self.mietobject) + ' ' + str(self.project) + ' ' + str(self.betrag)
