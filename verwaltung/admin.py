@@ -79,8 +79,8 @@ class InvestmentAdmin(admin.ModelAdmin):
         as_json_invest_data_building = json.dumps(list(invest_data_building), cls=DjangoJSONEncoder)
         as_json_miete_data_building = json.dumps(list(miete_data_building), cls=DjangoJSONEncoder)
 
-        print('as_json_invest_data_object:'+ str(as_json_invest_data_object))
-        print('miete_data_object:'+ str(as_json_miete_data_object))
+       # print('as_json_invest_data_object:'+ str(as_json_invest_data_object))
+       # print('miete_data_object:'+ str(as_json_miete_data_object))
        # print('as_json_invest_data_building:'+ str(as_json_invest_data_building))
        # print('miete_data_building:' + str(as_json_miete_data_building))
 
